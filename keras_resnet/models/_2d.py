@@ -16,7 +16,7 @@ import keras_resnet.blocks
 import keras_resnet.layers
 
 
-def ResNet(inputs, blocks, block, include_top=True, classes=1000, freeze_bn=True, numerical_names=None, *args, **kwargs):
+def ResNet(inputs, blocks, block, include_top=True, classes=1000, numerical_names=None, *args, **kwargs):
     """
     Constructs a `keras.models.Model` object using the given block count.
 
@@ -29,8 +29,6 @@ def ResNet(inputs, blocks, block, include_top=True, classes=1000, freeze_bn=True
     :param include_top: if true, includes classification layers
 
     :param classes: number of classes to classify (include_top must be true)
-
-    :param freeze_bn: if true, freezes BatchNormalization layers (ie. no updates are done in these layers)
 
     :param numerical_names: list of bool, same size as blocks, used to indicate whether names of layers should include numbers or letters
 
@@ -63,7 +61,7 @@ def ResNet(inputs, blocks, block, include_top=True, classes=1000, freeze_bn=True
 
     x = keras.layers.ZeroPadding2D(padding=3, name="padding_conv1")(inputs)
     x = keras.layers.Conv2D(64, (7, 7), strides=(2, 2), use_bias=False, name="conv1")(x)
-    x = keras_resnet.layers.BatchNormalization(axis=axis, epsilon=1e-5, freeze=freeze_bn, name="bn_conv1")(x)
+    x = keras.layers.BatchNormalization(axis=axis, epsilon=1e-5, name="bn_conv1")(x)
     x = keras.layers.Activation("relu", name="conv1_relu")(x)
     x = keras.layers.MaxPooling2D((3, 3), strides=(2, 2), padding="same", name="pool1")(x)
 
@@ -73,7 +71,7 @@ def ResNet(inputs, blocks, block, include_top=True, classes=1000, freeze_bn=True
 
     for stage_id, iterations in enumerate(blocks):
         for block_id in range(iterations):
-            x = block(features, stage_id, block_id, numerical_name=(block_id > 0 and numerical_names[stage_id]), freeze_bn=freeze_bn)(x)
+            x = block(features, stage_id, block_id, numerical_name=(block_id > 0 and numerical_names[stage_id]))(x)
 
         features *= 2
 
