@@ -13,7 +13,6 @@ import keras.models
 import keras.regularizers
 
 import keras_resnet.blocks
-import keras_resnet.layers
 
 
 def ResNet(inputs, blocks, block, include_top=True, classes=1000, numerical_names=None, *args, **kwargs):
